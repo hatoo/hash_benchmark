@@ -55,6 +55,11 @@ fn bench_fnv(b: &mut Bencher) {
 }
 
 #[bench]
+fn bench_metrohash(b: &mut Bencher) {
+    b.iter(|| bench_hasher::<metrohash::MetroHash>());
+}
+
+#[bench]
 fn bench_default_hasher_80bytes(b: &mut Bencher) {
     b.iter(|| bench_hasher_80bytes::<DefaultHasher>());
 }
@@ -70,6 +75,11 @@ fn bench_fnv_80bytes(b: &mut Bencher) {
 }
 
 #[bench]
+fn bench_metrohash_80bytes(b: &mut Bencher) {
+    b.iter(|| bench_hasher_80bytes::<metrohash::MetroHash>());
+}
+
+#[bench]
 fn bench_default_hasher_hashset(b: &mut Bencher) {
     b.iter(|| bench_hashset::<RandomState>())
 }
@@ -82,4 +92,9 @@ fn bench_rustc_hash_hashset(b: &mut Bencher) {
 #[bench]
 fn bench_fnv_hashset(b: &mut Bencher) {
     b.iter(|| bench_hashset::<fnv::FnvBuildHasher>())
+}
+
+#[bench]
+fn bench_metrohash_hashset(b: &mut Bencher) {
+    b.iter(|| bench_hashset::<metrohash::MetroBuildHasher>())
 }

@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 rustc-hash = "1"
 fnv = "1"
+metrohash = "1"
