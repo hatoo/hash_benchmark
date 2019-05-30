@@ -2,8 +2,9 @@
 
 extern crate test;
 
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hasher;
+use std::collections::hash_map::{DefaultHasher, RandomState};
+use std::collections::HashSet;
+use std::hash::{BuildHasher, BuildHasherDefault, Hasher};
 use test::Bencher;
 
 #[inline]
@@ -28,6 +29,14 @@ fn bench_hasher_80bytes<T: Hasher + Default>() -> u64 {
         v = hasher.finish();
     }
     v
+}
+
+#[inline]
+fn bench_hashset<S: BuildHasher + Default>() {
+    let mut hashset = HashSet::<u64, S>::default();
+    for i in 0..100000 {
+        hashset.insert(i);
+    }
 }
 
 #[bench]
@@ -58,4 +67,19 @@ fn bench_rustc_hash_80bytes(b: &mut Bencher) {
 #[bench]
 fn bench_fnv_80bytes(b: &mut Bencher) {
     b.iter(|| bench_hasher_80bytes::<fnv::FnvHasher>());
+}
+
+#[bench]
+fn bench_default_hasher_hashset(b: &mut Bencher) {
+    b.iter(|| bench_hashset::<RandomState>())
+}
+
+#[bench]
+fn bench_rustc_hash_hashset(b: &mut Bencher) {
+    b.iter(|| bench_hashset::<BuildHasherDefault<rustc_hash::FxHasher>>())
+}
+
+#[bench]
+fn bench_fnv_hashset(b: &mut Bencher) {
+    b.iter(|| bench_hashset::<fnv::FnvBuildHasher>())
 }
